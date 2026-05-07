@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Offline ChatBot</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<h2>Admin Panel</h2>
+
+<h3>Add Train</h3>
+<form method="POST">
+    <input type="hidden" name="action" value="add_train">
+    <input type="text" name="train_no" placeholder="Train Number" required>
+    <input type="text" name="name" placeholder="Train Name" required>
+    <input type="text" name="timings" placeholder="Timings (comma separated)" required>
+    <input type="number" name="fare" placeholder="Fare" required>
+    <button type="submit">Add Train</button>
+</form>
+
+<h3>Add Station to Train</h3>
+<form method="POST">
+    <input type="hidden" name="action" value="add_station">
+    <select name="train_no" required>
+        {% for t_no, t_data in trains.items() %}
+        <option value="{{t_no}}">{{t_no}} - {{t_data.name}}</option>
+        {% endfor %}
+    </select>
+    <input type="text" name="station_name" placeholder="Station Name" required>
+    <input type="text" name="facilities" placeholder="Facilities (comma separated)" required>
+    <button type="submit">Add Station</button>
+</form>
+
+<h3>Current Trains</h3>
+<ul>
+    {% for t_no, t_data in trains.items() %}
+    <li>{{t_no}} - {{t_data.name}} | Fare: Rs.{{t_data.fare}} | Stations: {{ t_data.stations | length }}</li>
+    {% endfor %}
+</ul>
+</body>
+</html>

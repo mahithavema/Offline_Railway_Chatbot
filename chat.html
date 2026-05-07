@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Railway ChatBot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <h2>Offline Railway ChatBot</h2>
+
+  <div id="chatbox">
+      <!-- Messages will be added dynamically -->
+  </div>
+
+  <div id="input-section">
+      <input type="text" id="userInput" placeholder="Ask something... (Ex: Train 12623 details)">
+      <br><br>
+      <button onclick="sendMessage()">Send</button>
+      <button onclick="clearChat()">Clear</button>
+  </div>
+
+<script>
+function sendMessage() {
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    fetch("/chatbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+    })
+    .then(res => res.json())
+    .then(data => {
+        addMessage(data.reply, "bot");
+    });
+}
+
+function addMessage(msg, type) {
+    const box = document.getElementById("chatbox");
+    const div = document.createElement("div");
+    div.className = "message " + type;
+    div.textContent = msg;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+}
+
+function clearChat() {
+    document.getElementById("chatbox").innerHTML = "";
+}
+</script>
+
+</body>
+</html>
